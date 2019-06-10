@@ -1,0 +1,41 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+      - image: docker:
+        - image: python:3.61
+        - image: mysql:5.7
+          environment:
+            MYSQL_ROOT_PASSWORD: 123456
+            MYSQL_DATABASE: todo_db
+            MYSQL_USER: root
+            MYSQL_PASSWORD: 123456
+
+    working_directory: ~/circle
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - run:
+          name: Check Connection
+          command: |
+            /bin/bash ./waitformysql.sh
+      - run:
+          name: Execute SQL Scripts
+          command: |
+            /bin/bash ./applysql.sh
+      - run:
+          name: Install Requirements
+          command: |
+            pip install -r ./requirements.txt
+      - run:
+          name: Servertests
+          command: |
+            /bin/bash ./www
+            python server.py test
