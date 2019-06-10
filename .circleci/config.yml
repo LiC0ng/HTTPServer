@@ -21,7 +21,12 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
+      - run:
+          name: Install MySQL Client
+          command: |
+            apt-get update; \
+            apt-get install -y mysql-client libmysqlclient-dev --no-install-recommends; \
+            rm -rf /var/lib/apt/lists/*
       - run:
           name: Check Connection
           command: |
