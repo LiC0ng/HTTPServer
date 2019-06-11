@@ -75,6 +75,7 @@ curl -X GET http://localhost:8080/api/v1/todo/1
 
 404 Not Found
 {'status': 'failure', 'message': 'Event not found', 'id': 1}
+```
 
 ### id(=1)のイベントの消去 request
 ```
@@ -91,3 +92,4 @@ curl -X DELETE http://localhost:8080/api/v1/todo/1
 
 404 Not Found
 {'status': 'failure', 'message': 'Event not found', 'id': 1}
+```
