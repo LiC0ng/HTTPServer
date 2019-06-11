@@ -3,6 +3,8 @@
 ### すみませんが、circleci配置中です
 
 ##はじめ
+
+
 ###環境：
 - python 3.7.3
 - mysql 8.0.16
@@ -42,7 +44,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"deadline": "2019-06-11T14
 {"status": "failure", "message": "invalid date format"}
 ###データフォーマットが違い場合
 {"status": "failure", "message": "invalid data format"}
-
+```
 ### 全てのイベントの取得 request
 ```
 GET /api/v1/todo
