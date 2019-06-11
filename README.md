@@ -2,24 +2,25 @@
 
 ### すみませんが、circleci配置中です
 
-##はじめ
+## はじめ
 
 
-###環境：
+### 環境：
 - python 3.7.3
 - mysql 8.0.16
 
-###server:
+### server:
 - eventの登録ができる
 - 全てのeventを取得できる
 - 一つのeventを取得できる
 - あるeventを消去できる
 
-##実行方法
-###　1.requirements.txt 中のライブラリをインストールする
-###　2.schema.sqlを実行して、データベースと表を作成する
-###　3.server.pyを実行する
-
+### 実行方法:
+```
+1.requirements.txt 中のライブラリをインストールする
+2.schema.sqlを実行して、データベースと表を作成する
+3.server.pyを実行する
+```
 
 ## API
 ### イベントの登録 request
