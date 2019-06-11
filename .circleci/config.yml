@@ -6,39 +6,82 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.1
-      - image: mysql:5.7
+      - image: circleci/python:3.7.3
+      - image: circleci/mysql:8.0.13-ram
+        command: |
+          mysqld --default-authentication-plugin=mysql_native_password
         environment:
-            MYSQL_ROOT_PASSWORD: 123456
-            MYSQL_DATABASE: todo_db
-            MYSQL_USER: root
-            MYSQL_PASSWORD: 123456
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: todo_db
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_USER: todotest
+          MYSQL_PASSWORD: todotest
+          MYSQL_ROOT_HOST: '%'
 
-    working_directory: ~/circle
+    working_directory: ~/repo
 
     steps:
       - checkout
+      - run:
+          name: Install System Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y lsb-release mysql-client
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+      # mysqlコンテナの起動待機
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      # 現在のrequirements.txtに基づきPython仮想環境を作成または更新
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      - run:
+          name: initialize db
+          command: |
+            . venv/bin/activate
+            python3 create_database.py
+      - run:
+          name: Serverstart
+          command: |
+            . venv/bin/activate
+            python3 server.py
+            background: true
+      - run:
+          name: waiting for server start
+          command: sleep 5
+      - run:
+          name: post todo 1
+          command: curl -X POST -H "Content-Type:application/json" -d '{"deadline":"2019-06-11T14:00:00+09:00", "title":"todo1", "memo":"todo1"}' http://localhost:8080/api/v1/todo
+      - run:
+          name: post todo 2
+          command: curl -X POST -H "Content-Type:application/json" -d '{"deadline":"2019-06-11T14:00:00+09:00", "title":"todo2", "memo":"todo2"}' http://localhost:8080/api/v1/todo
+      - run:
+          name: post todo 3 but unvalid date format
+          command: curl -X POST -H "Content-Type:application/json" -d '{"deadline":"2019-06-11 14:00:00", "title":"todo3", "memo":"todo3"}' http://localhost:8080/api/v1/todo
+      - run:
+          name: get all
+          command: curl -X GET http://localhost:8080/api/v1/todo
+      - run:
+          name: get id = 2
+          command: curl -X GET http://localhost:8080/api/v1/todo/2
+      - run:
+          name: get id that does not exist
+          command: curl -X GET http://localhost:8080/api/v1/todo/888
+      - run:
+          name: delete id =2
+          command: curl -X DELETE http://localhost:8080/api/v1/todo/2
+      - run:
+          name: delete id dose not exist
+          command: curl -X DELETE http://localhost:8080/api/v1/todo/2
+      
 
-      - run:
-          name: Install MySQL Client
-          command: |
-            apt-get update; \
-            apt-get install -y mysql-client libmysqlclient-dev --no-install-recommends; \
-            rm -rf /var/lib/apt/lists/*
-      - run:
-          name: Check Connection
-          command: |
-            /bin/bash ./waitformysql.sh
-      - run:
-          name: Execute SQL Scripts
-          command: |
-            /bin/bash ./applysql.sh
-      - run:
-          name: Install Requirements
-          command: |
-            pip install -r ./requirements.txt
-      - run:
-          name: Servertests
-          command: |
-            /bin/bash ./www
-            python server.py test
+
