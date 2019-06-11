@@ -96,7 +96,7 @@ curl -X GET http://localhost:8080/api/v1/todo/1
 
 ### id(=1)のイベントの消去 request
 ```
-GET /api/v1/todo/1
+DELETE /api/v1/todo/1
 ```
 コマンドライン  
 ```
