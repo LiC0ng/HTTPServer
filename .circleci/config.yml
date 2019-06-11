@@ -54,7 +54,7 @@ jobs:
           command: |
             . venv/bin/activate
             python3 server.py
-            background: true
+          background: true
       - run:
           name: waiting for server start
           command: sleep 5
