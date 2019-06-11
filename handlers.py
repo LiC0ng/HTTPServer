@@ -23,7 +23,7 @@ _RE_RFC3339 = re.compile(r'^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt
 @post('/api/v1/todo')
 async def register(*, deadline, title, memo):
     if not _RE_RFC3339.match(deadline):
-        result = ['failure', 'Invalid data format']
+        result = ['failure', 'Invalid date format']
         return result
 
     nextid = await Todo.nextId()
