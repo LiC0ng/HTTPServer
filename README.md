@@ -1,13 +1,23 @@
 # システム開発プロジェクト基礎　1Q レポート課題
 
-### すみませんが、circleci配置中です
 
-## はじめ
+## このサーバーはCoroutineに基づいて作った
 
 
 ### 環境：
 - python 3.7.3
 - mysql 8.0.16
+
+### File
+- server.py server file
+- orm.py orm file
+- models.py todo model config file
+- coroweb.py framework of server
+- config.py convert config_default.py into dict
+- config_default.py you can set dbuser and dbpassword here
+- apis.py one APIError include here
+- handles.py handle url, you can add url here
+- create_database.py create database and file, dbuser:todotest, dbpassword:todotest
 
 ### server:
 - eventの登録ができる
@@ -18,7 +28,7 @@
 ### 実行方法:
 ```
 1.requirements.txt 中のライブラリをインストールする
-2.schema.sqlを実行して、データベースと表を作成する
+2.create_database.pyを実行して、データベースと表を作成する(dbuser:todotest, dbpsword:todotest)
 3.server.pyを実行する
 ```
 
@@ -44,7 +54,11 @@ curl -X POST -H "Content-Type: application/json" -d '{"deadline": "2019-06-11T14
 400 Bad Request
 {"status": "failure", "message": "invalid date format"}
 ###データフォーマットが違い場合
-{"status": "failure", "message": "invalid data format"}
+400 Bad Request
+{"status": "failure", "message": "JSON body must be object"}
+###headが違い場合
+400 Bad Request
+{"status": "failure", "message": "Unsupported Content-Type"}
 ```
 ### 全てのイベントの取得 request
 ```
