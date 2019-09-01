@@ -88,7 +88,7 @@ curl -X GET http://localhost:8080/api/v1/todo/1
 ### id(=1)のイベントの取得 response
 ```
 200 OK
-{"id": 1, "deadline": "2019-06-11T14:00:00+09:00", "title": "レreport", "memo": ""}
+{"id": 1, "deadline": "2019-06-11T14:00:00+09:00", "title": "report", "memo": ""}
 
 404 Not Found
 {'status': 'failure', 'message': 'Event not found', 'id': 1}
